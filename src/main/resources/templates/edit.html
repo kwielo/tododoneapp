@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html"></head>
+<body>
+<div class="container">
+    <div th:replace="fragments/header.html"></div>
+    <div class="columns m-1">
+        <h5 th:text="${'Editing note ' + note.id}"></h5>
+    </div>
+    <div class="columns">
+        <div class="column col-4 m-1">
+            <form id="edit-form" name="note" th:action="@{/note/edit/{noteId}(noteId=${note.id})}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="note-description">Description</label>
+                    <textarea class="form-input" type="text" id="note-description"
+                              name="description" th:text="${note.description}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="note-priority">Priority</label>
+                    <select class="form-input col-2" type="text" id="note-priority"
+                           name="priority">
+                        <option th:each="priority : ${priorities}"
+                                th:value="${priority.key}"
+                                th:text="${priority.value}"
+                                th:selected="${priority.key==note.priority}"
+                        ></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="btn btn-primary" type="submit" value="Save" />
+                    <a class="btn" th:href="@{/}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

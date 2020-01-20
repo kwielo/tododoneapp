@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html"></head>
+<body>
+    <div class="container">
+        <div th:replace="fragments/header.html"></div>
+        <div class="columns">
+            <div class="column col-6 m-1">
+                <form id="search-form" th:action="@{/}" method="get">
+                    <div class="input-group">
+                        <a class="btn btn-success" th:href="@{/note/add}">New</a>&nbsp
+                        <input th:if="${showFilter != ''}" type="hidden" name="show" th:value="${showFilter}">
+                        <input class="form-input" type="text" id="search" name="search" placeholder="type text" th:value="${searchQuery}">
+                        <input type="submit" class="btn btn-primary input-group-btn" value="Search" />
+                        <input type="submit" class="btn btn-primary input-group-btn" value="Clear"
+                               onclick="document.getElementById('search').value='';document.getElementById('search-form').click()" />
+                        &nbsp;<span class="btn" th:text="${notes.totalElements}"></span>
+                        &nbsp;<a class="chip text-primary bg-secondary" th:href="@{/}">all</a>
+                        &nbsp;<a class="chip text-light bg-error" th:href="@{/(show = 'deleted')}">deleted</a>
+                        &nbsp;<a class="chip text-light bg-success" th:href="@{/(show = 'done')}">done</a>
+                        &nbsp;<a class="chip text-light bg-primary" th:href="@{/(show = 'undone')}">undone</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column col-8">
+                <div th:each="note : ${notes}" class="card m-1 float-left" style="width: 250px; height: 350px;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="chip" th:text="'Author: ' + ${note.author}"></span><br />
+                            <span class="chip" th:text="'Priority: ' + ${note.priorityText}"></span><br />
+                            <span class="chip" th:text="${#dates.format(note.updatedAt, 'd/MMM/yyyy HH:mm.ss')}"></span>
+                        </div>
+                    </div>
+                    <div class="card-body" th:text="${note.description}"></div>
+                    <div class="card-footer p-centered">
+                        <a th:href="@{/note/edit/{noteId}(noteId=${note.id})}"><button class="btn btn-sm">Edit</button></a>
+                        <a th:if="${not note.isDone()}" th:href="@{/note/done/{noteId}(noteId=${note.id})}"><button class="btn btn-success btn-sm">Done</button></a>
+                        <a th:if="${note.isDone()}" th:href="@{/note/undone/{noteId}(noteId=${note.id})}"><button class="btn btn-primary btn-sm">Undo</button></a>
+                        <a th:href="@{/note/delete/{noteId}(noteId=${note.id})}" onclick="return confirm('Are you sure?')"><button class="btn btn-error btn-sm">Delete</button></a><br />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns m-1">
+            <div class="column col-8">
+                <ul class="pagination">
+                    <li class="page-item" th:if="${notes.hasPrevious()}">
+                        <a class="page-link" th:href="@{''(page=${notes.number},__(${showFilter} != '') ? ',show=${showFilter}' : ','__,__(${searchQuery} != '') ? ',search=${searchQuery}' : ','__)}">Previous</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, notes.totalPages)}" th:classappend="${notes.number eq (i - 1)} ? 'active'">
+                        <a
+                                class="page-link"
+                                th:href="@{''(page=${i},__(${showFilter} != '') ? ',show=${showFilter}' : ','__,__(${searchQuery} != '') ? ',search=${searchQuery}' : ','__)}"
+                                th:text="${i}"
+                        ></a>
+                    </li>
+                    <li class="page-item" th:if="${notes.hasNext()}">
+                        <a class="page-link" th:href="@{''(page=${notes.number + 2},__(${showFilter} != '') ? ',show=${showFilter}' : ','__,__(${searchQuery} != '') ? ',search=${searchQuery}' : ','__)}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column col-8 text-center">
+                Coded with &hearts; by Krzysztof Wielogorski
+            </div>
+        </div>
+    </div>
+</body>
+</html>

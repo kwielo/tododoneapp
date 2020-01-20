@@ -1,0 +1,16 @@
+<div class="columns">
+    <div class="column col-4 m-1">
+        <h2>to do done</h2>
+    </div>
+    <div class="column col-3 m-1">
+        <p class="pt-2 float-right" th:if="${user}">
+            Logged in as: <span class="text-bold" th:text="${user.name}"></span>
+            &nbsp;[<a th:href="@{/logout}">Sign out</a>]
+        </p>
+        <p class="pt-2 float-right" th:unless="${user}">
+            Anonymous User
+            &nbsp;[<a th:href="@{/login}">Sign in</a>]
+        </p>
+    </div>
+
+</div>
